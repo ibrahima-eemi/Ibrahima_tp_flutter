@@ -45,7 +45,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         _imageController.text = product.image;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erreur: $e')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -78,7 +80,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
       if (mounted) context.go('/'); // redirige et rafraîchit la liste
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erreur: $e')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -88,38 +92,48 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.uuid != null ? 'Modifier Produit' : 'Ajouter Produit'),
+        title: Text(
+          widget.uuid != null ? 'Modifier Produit' : 'Ajouter Produit',
+        ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  children: [
-                    _buildField(_nameController, 'Nom'),
-                    _buildField(_descriptionController, 'Description'),
-                    _buildField(_priceController, 'Prix', isNumber: true),
-                    _buildField(_imageController, 'URL de l’image'),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _submitForm,
-                      child: Text(widget.uuid != null ? 'Modifier' : 'Ajouter'),
-                    ),
-                  ],
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Padding(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    children: [
+                      _buildField(_nameController, 'Nom'),
+                      _buildField(_descriptionController, 'Description'),
+                      _buildField(_priceController, 'Prix', isNumber: true),
+                      _buildField(_imageController, 'URL de l’image'),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _submitForm,
+                        child: Text(
+                          widget.uuid != null ? 'Modifier' : 'Ajouter',
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
     );
   }
 
-  Widget _buildField(TextEditingController controller, String label, {bool isNumber = false}) {
+  Widget _buildField(
+    TextEditingController controller,
+    String label, {
+    bool isNumber = false,
+  }) {
     return TextFormField(
       controller: controller,
       keyboardType: isNumber ? TextInputType.number : null,
       decoration: InputDecoration(labelText: label),
-      validator: (value) => value == null || value.isEmpty ? 'Champ requis' : null,
+      validator:
+          (value) => value == null || value.isEmpty ? 'Champ requis' : null,
     );
   }
 }
