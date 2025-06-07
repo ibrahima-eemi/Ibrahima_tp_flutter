@@ -1,9 +1,13 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import '../models/product.dart';
 
 class ApiService {
   static const baseUrl = 'https://eemi-39b84a24258a.herokuapp.com';
+
+  // FIXME Essaye de garder de la coherence dans tes methodes. Des fois, tu mets des headers, des fois non.
 
   Future<List<Product>> fetchProducts({String query = ''}) async {
     final uri = Uri.parse('$baseUrl/products${query.isNotEmpty ? '?search=$query' : ''}');
@@ -14,6 +18,7 @@ class ApiService {
       throw Exception('Erreur chargement');
     }
   }
+
   Future<Product> createProduct(Product p) async {
     final res = await http.post(
       Uri.parse('$baseUrl/products'),
@@ -39,7 +44,7 @@ class ApiService {
       throw Exception('Erreur mise à jour');
     }
   }
-  
+
   Future<void> deleteProduct(String uuid) async {
     final res = await http.delete(Uri.parse('$baseUrl/products/$uuid'));
     if (res.statusCode != 204) {

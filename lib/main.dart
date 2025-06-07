@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'screens/product_list_screen.dart';
+
 import 'screens/product_form_screen.dart';
+import 'screens/product_list_screen.dart';
 
 void main() => runApp(const MyApp());
 
 final GoRouter _router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (_, __) => const ProductListScreen()),
+    // FIXME Essaye d'avoir un meilleur nommage sur le path. Ici on travaille sur des produits donc product au lieu de form
     GoRoute(path: '/form', builder: (_, __) => const ProductFormScreen()),
     GoRoute(
       path: '/form/:uuid',

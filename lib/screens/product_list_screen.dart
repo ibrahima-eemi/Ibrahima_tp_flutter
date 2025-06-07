@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../models/product.dart';
 import '../services/api_service.dart';
 
@@ -13,6 +15,8 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final ApiService apiService = ApiService();
+  // FIXME Attention à l'utilisation des futures builder, lorsque tu utilises un setState tu vas forcement refaire une requete.
+  // FIXME De plus, à chaque mise à jour du composant tu vas refaire un fetch à ton API. C'est vraiment pas bon en terme de performance
   late Future<List<Product>> _productsFuture;
   final _searchController = TextEditingController();
   Timer? _debounce;
@@ -30,6 +34,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   void _onSearchChanged(String query) {
+    // FIXME Il faut le cancel uniquement si il est actif _debounce.isActive
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       _loadProducts(query);
@@ -48,8 +53,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
           TextButton(
             onPressed: () async {
+              // FIXME Avant de fermer la modal, il faut attendre que la suppression soit terminée
+              // FIXME De plus tu fais un await sans try catch. Du coup tu geres pas du tout les erreurs
               Navigator.pop(context);
               await apiService.deleteProduct(uuid);
+
+              // FIXME Evite de recharger la liste des produits après la suppression. Faire trop de requete à chaque action va te creer des problèmes de performance en production si tu as beaucoup de trafic sur ton application.
+              // FIXME Ce problème tu peux l'eviter en passant par une List<Product> à la place de ton futurBuilder. Et tu fais un traitement comme items.removeWhere((e) => e.uuid == ELEMENT_SUPPRIME.uuid)
               _loadProducts(_searchController.text);
             },
             child: const Text('Supprimer'),
@@ -88,6 +98,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             child: FutureBuilder<List<Product>>(
               future: _productsFuture,
               builder: (context, snapshot) {
+                // FIXME Le code devient illisible avec tous les if else. Tu peux juste faire des if puis return
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
@@ -97,6 +108,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 }
 
                 final products = snapshot.data!;
+
                 return GridView.builder(
                   padding: const EdgeInsets.all(8),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -108,6 +120,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final p = products[index];
+
+                    // FIXME Ici, il faudrait mettre ce code dans un nouveau fichier (par exemple: product_card en Stateless Widget)
+
                     return GestureDetector(
                       onTap: () => context.go('/form/${p.uuid}'),
                       child: Stack(
