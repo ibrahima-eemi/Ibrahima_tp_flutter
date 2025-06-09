@@ -103,6 +103,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Erreur: ${snapshot.error}'));
+                  // FIXME Tu testes deux fois la meme chose si hasData est a false c'est forcement que data est vide
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('Aucun produit trouvé.'));
                 }
