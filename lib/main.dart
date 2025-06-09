@@ -9,8 +9,9 @@ void main() => runApp(const MyApp());
 final GoRouter _router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (_, __) => const ProductListScreen()),
-    // FIXME Essaye d'avoir un meilleur nommage sur le path. Ici on travaille sur des produits donc product au lieu de form
+    // FIXME Essaye d'avoir un meilleur nommage sur le path. Ici on travaille sur des produits donc products/create au lieu de form
     GoRoute(path: '/form', builder: (_, __) => const ProductFormScreen()),
+    // FIXME /products/:productId
     GoRoute(
       path: '/form/:uuid',
       builder: (context, state) => ProductFormScreen(uuid: state.pathParameters['uuid']),

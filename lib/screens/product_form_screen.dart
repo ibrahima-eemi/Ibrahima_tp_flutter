@@ -61,6 +61,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
     final product = Product(
       // FIXME La chaine vide devrait être null sur l'uuid si tu pars du principe que tu veux forcement passer une Class Product à ton service
+      // FIXME Mais clairement cette étape est inutile autant envoyé la donnée sur forme de Map<String, dynamic> dans ton service
       uuid: _editingProduct?.uuid ?? '',
       name: _nameController.text,
       description: _descriptionController.text,
@@ -92,7 +93,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     }
   }
 
-  // TODO Tu n'as pas dispose les champs TextEditingController
+  // FIXME Tu n'as pas dispose les champs TextEditingController
 
   @override
   Widget build(BuildContext context) {

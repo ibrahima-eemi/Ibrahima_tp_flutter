@@ -36,7 +36,7 @@ class Product {
     'image': image,
   };
 
-  // FIXME La logique du decode devrait pas être ici. Elle devrait être dans le service. Ici tu devrais juste assigné la Map à la classe Product
+  // FIXME La logique du decode ne devrait pas être ici. Elle devrait être dans le service. Ici tu devrais juste assigner la Map à la classe Product
   static List<Product> listFromJson(String jsonData) {
     final Map<String, dynamic> parsed = json.decode(jsonData);
     final rows = parsed['rows'];
