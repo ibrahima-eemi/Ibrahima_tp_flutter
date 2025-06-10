@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../models/product.dart';
 import '../services/api_service.dart';
 
@@ -35,6 +36,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   Future<void> _loadProduct(String uuid) async {
     setState(() => _isLoading = true);
     try {
+      // FIXME Tu ne dois pas charger tous les produits mais plutot utilisé la route api qui permet de recuperer un seul produit
+      // FIXME Du coup il faut fetch la routes /products/:uuid, Il te manque cette route dans ton api service
       final products = await apiService.fetchProducts();
       final product = products.firstWhere((p) => p.uuid == uuid);
       setState(() {
@@ -57,6 +60,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final product = Product(
+      // FIXME La chaine vide devrait être null sur l'uuid si tu pars du principe que tu veux forcement passer une Class Product à ton service
+      // FIXME Mais clairement cette étape est inutile autant envoyé les données au format Map<String, dynamic> dans ton service
       uuid: _editingProduct?.uuid ?? '',
       name: _nameController.text,
       description: _descriptionController.text,
@@ -88,6 +93,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     }
   }
 
+  // FIXME Tu n'as pas dispose les champs TextEditingController
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,30 +103,29 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           widget.uuid != null ? 'Modifier Produit' : 'Ajouter Produit',
         ),
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Padding(
-                padding: const EdgeInsets.all(16),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: [
-                      _buildField(_nameController, 'Nom'),
-                      _buildField(_descriptionController, 'Description'),
-                      _buildField(_priceController, 'Prix', isNumber: true),
-                      _buildField(_imageController, 'URL de l’image'),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _submitForm,
-                        child: Text(
-                          widget.uuid != null ? 'Modifier' : 'Ajouter',
-                        ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    _buildField(_nameController, 'Nom'),
+                    _buildField(_descriptionController, 'Description'),
+                    _buildField(_priceController, 'Prix', isNumber: true),
+                    _buildField(_imageController, 'URL de l’image'),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      child: Text(
+                        widget.uuid != null ? 'Modifier' : 'Ajouter',
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+            ),
     );
   }
 
@@ -128,12 +134,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     String label, {
     bool isNumber = false,
   }) {
+    // FIXME Tu testes uniquement que le champ doit etre rempli
+    // FIXME Aucun test sur le format de l'url, ou sur le prix
     return TextFormField(
       controller: controller,
       keyboardType: isNumber ? TextInputType.number : null,
       decoration: InputDecoration(labelText: label),
-      validator:
-          (value) => value == null || value.isEmpty ? 'Champ requis' : null,
+      validator: (value) => value == null || value.isEmpty ? 'Champ requis' : null,
     );
   }
 }
